@@ -1,0 +1,1993 @@
+
+<!DOCTYPE html>
+<html lang="en" data-theme="gray">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sick.</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;800&family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  color-scheme: dark;
+  --bg: #2b2b2b;
+  --card: #101010;
+  --raise: #1d1d1d;
+  --line: #2e2e2e;
+  --text: #f0f0f0;
+  --muted: #8f8f8f;
+  --green: #78c99a;
+  --accent: #d4d4d4;
+}
+
+[data-theme="charcoal"] {
+  --bg: #161616;
+  --card: #000;
+  --raise: #1a1a1a;
+}
+
+[data-theme="light"] {
+  color-scheme: light;
+  --bg: #cfcfcf;
+  --card: #f3f3f3;
+  --raise: #e3e3e3;
+  --line: #d2d2d2;
+  --text: #111;
+  --muted: #666;
+  --accent: #222;
+  --green: #287b4b;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Inter Tight", Arial, sans-serif;
+  transition: background .3s, color .3s;
+}
+
+h1,h2,h3 {
+  font-family: Archivo, sans-serif;
+  margin: 0;
+}
+
+h1 {
+  font-size: 64px;
+  letter-spacing: -4px;
+  font-weight: 800;
+}
+
+h2 {
+  font-size: 22px;
+  margin-bottom: 8px;
+}
+
+p {
+  margin: 0;
+  line-height: 1.6;
+}
+
+button,input,textarea,select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+  transition: .22s;
+}
+
+button:hover {
+  transform: translateY(-2px);
+}
+
+button:active {
+  transform: scale(.97);
+}
+
+svg {
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.muted {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.between {
+  justify-content: space-between;
+}
+
+.wrap {
+  flex-wrap: wrap;
+}
+
+main {
+  max-width: 1100px;
+  margin: auto;
+  padding: 18px 12px 40px;
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 12px;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid transparent;
+  border-radius: 18px;
+  padding: 24px;
+  min-width: 0;
+  transition: transform .25s, border-color .25s, box-shadow .25s;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  border-color: var(--line);
+  box-shadow: 0 12px 30px #0002;
+}
+
+.full {
+  grid-column: 1 / -1;
+}
+
+body.ready .card {
+  animation: enter .6s both;
+  animation-delay: calc(var(--i) * 65ms);
+}
+
+@keyframes enter {
+  from { opacity: 0; translate: 0 20px; }
+  to { opacity: 1; translate: 0 0; }
+}
+
+.primary,.secondary {
+  padding: 13px 18px;
+  border-radius: 12px;
+  font-weight: 600;
+}
+
+.primary {
+  background: var(--accent);
+  color: var(--card);
+  border: none;
+}
+
+.secondary {
+  background: var(--raise);
+  border: 1px solid var(--line);
+  color: var(--text);
+}
+
+.secondary:hover {
+  border-color: var(--muted);
+}
+
+.wide { width: 100%; }
+
+.field {
+  width: 100%;
+  background: var(--raise);
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 13px;
+  margin-top: 10px;
+}
+
+textarea.field {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.tile {
+  background: var(--raise);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 16px;
+}
+
+.tiles {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 18px 0;
+}
+
+.big {
+  font-family: Archivo,sans-serif;
+  font-size: 38px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  margin: 16px 0 5px;
+}
+
+.status {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 12px;
+  overflow-wrap: anywhere;
+}
+
+/* INTRO */
+
+#intro {
+  position: fixed;
+  inset: 0;
+  background: #080808;
+  color: white;
+  z-index: 9999;
+  display: grid;
+  place-items: center;
+  transition: opacity .8s, visibility .8s;
+}
+
+#intro.finished {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.intro-content {
+  text-align: center;
+  animation: enter 1s both;
+}
+
+.orb {
+  width: 110px;
+  height: 110px;
+  background: #151515;
+  border: 1px solid #333;
+  border-radius: 32px;
+  margin: 0 auto 25px;
+  display: grid;
+  place-items: center;
+  color: #78c99a;
+  position: relative;
+  box-shadow: 0 0 100px #78c99a22;
+  animation: heartbeat 2s infinite;
+}
+
+.orb svg {
+  width: 60px;
+  height: 60px;
+}
+
+.orb::after {
+  content: "";
+  position: absolute;
+  inset: -10px;
+  border: 1px solid #78c99a66;
+  border-radius: 40px;
+  animation: pulse 2s infinite;
+}
+
+@keyframes heartbeat {
+  0%,100% { transform: scale(1); }
+  15% { transform: scale(1.09); }
+  30% { transform: scale(1); }
+  45% { transform: scale(1.05); }
+  60% { transform: scale(1); }
+}
+
+@keyframes pulse {
+  from { transform: scale(1); opacity: 1; }
+  to { transform: scale(1.5); opacity: 0; }
+}
+
+.loading {
+  width: 180px;
+  height: 3px;
+  background: #222;
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 30px auto 12px;
+}
+
+.loading span {
+  display: block;
+  height: 100%;
+  background: #78c99a;
+  animation: loading 2.6s forwards;
+}
+
+@keyframes loading {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+#skipIntro {
+  position: absolute;
+  bottom: 24px;
+  right: 24px;
+  background: #181818;
+  border: 1px solid #333;
+  color: #aaa;
+  padding: 10px 16px;
+  border-radius: 10px;
+}
+
+/* SICKNESS LEVELS */
+
+.feelings {
+  display: grid;
+  gap: 8px;
+  margin: 18px 0;
+}
+
+.feeling {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  background: var(--raise);
+  color: var(--text);
+  border-radius: 12px;
+  text-align: left;
+}
+
+.feeling:hover,.feeling.active {
+  border-color: var(--level);
+}
+
+.feeling.active {
+  box-shadow: inset 3px 0 var(--level);
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--level);
+  box-shadow: 0 0 10px var(--level);
+}
+
+/* APPLE HEALTH */
+
+.health-logo {
+  width: 48px;
+  height: 48px;
+  border-radius: 13px;
+  background: white;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.health-logo svg {
+  width: 30px;
+  height: 30px;
+  fill: #ff426b;
+  stroke: none;
+}
+
+.health-box {
+  background: var(--raise);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 16px;
+  margin-top: 20px;
+}
+
+.health-info {
+  flex: 1;
+}
+
+.connection-status {
+  padding: 6px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  background: var(--card);
+  color: var(--muted);
+}
+
+.connection-status.connected {
+  color: var(--green);
+}
+
+.sleep-icon {
+  width: 44px;
+  height: 44px;
+  background: var(--raise);
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 15px;
+  color: #a9a4ee;
+  transition: .3s;
+}
+
+.card:hover .sleep-icon {
+  transform: rotate(-12deg) scale(1.1);
+}
+
+.sleep-stages {
+  height: 12px;
+  display: flex;
+  overflow: hidden;
+  border-radius: 10px;
+  background: var(--line);
+  gap: 2px;
+  margin: 18px 0;
+}
+
+.stage {
+  height: 100%;
+  transition: width .5s;
+}
+
+.legend {
+  display: grid;
+  gap: 12px;
+}
+
+.legend-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+}
+
+.history {
+  display: grid;
+  gap: 8px;
+  margin-top: 18px;
+  max-height: 350px;
+  overflow-y: auto;
+}
+
+.history-item {
+  padding: 14px;
+  background: var(--raise);
+  border-radius: 12px;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.history-item button {
+  margin-top: 10px;
+}
+
+/* SYMPTOMS */
+
+.symptoms {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 15px;
+}
+
+.symptom {
+  background: var(--raise);
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  cursor: pointer;
+}
+
+.symptom:has(input:checked) {
+  border-color: var(--accent);
+}
+
+input[type="checkbox"] {
+  accent-color: var(--accent);
+}
+
+/* DIALOG */
+
+dialog {
+  width: min(480px,92vw);
+  max-height: 85vh;
+  overflow-y: auto;
+  background: var(--card);
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 24px;
+}
+
+dialog::backdrop {
+  background: #000a;
+  backdrop-filter: blur(7px);
+}
+
+dialog[open] {
+  animation: enter .3s both;
+}
+
+dialog .primary,dialog .secondary {
+  margin-top: 10px;
+}
+
+footer {
+  text-align: center;
+  color: var(--muted);
+  font-size: 13px;
+  padding: 0 15px 30px;
+}
+
+@media(max-width:700px) {
+  main { grid-template-columns: 1fr; }
+  .card { padding: 19px; }
+  h1 { font-size: 54px; }
+}
+
+@media(prefers-reduced-motion:reduce) {
+  *,*::before,*::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- INTRO -->
+
+<div id="intro">
+  <div class="intro-content">
+    <div class="orb">
+      <svg viewBox="0 0 24 24">
+        <path d="M3 12h4l3-7 4 14 3-7h4"/>
+      </svg>
+    </div>
+
+    <h1>Sick.</h1>
+
+    <p style="color:#999;margin-top:10px">
+      Rest. Recover. Take care.
+    </p>
+
+    <div class="loading"><span></span></div>
+
+    <p style="font-size:12px;color:#777">
+      Preparing your recovery dashboard
+    </p>
+  </div>
+
+  <button id="skipIntro">Skip intro</button>
+</div>
+
+<main id="app" inert>
+
+<!-- HEADER -->
+
+<section class="card full">
+  <div class="row between wrap">
+    <div>
+      <h1>Sick.</h1>
+      <p class="muted">Your personal recovery dashboard.</p>
+    </div>
+
+    <div>
+      <h2 id="clock"></h2>
+      <p class="muted" id="date"></p>
+    </div>
+  </div>
+
+  <p class="status" id="storageStatus">
+    Local browser storage
+  </p>
+</section>
+
+<!-- CURRENT STATUS -->
+
+<section class="card full">
+  <h2>Your current status</h2>
+  <p class="muted">Your most recent sickness check-in.</p>
+
+  <div class="tile" style="margin-top:16px">
+    <div class="big" id="currentFeeling" style="margin-top:0">
+      Not recorded
+    </div>
+    <p class="muted" id="feelingTime">
+      Complete a check-in to get started.
+    </p>
+  </div>
+</section>
+
+<!-- CHECK-IN -->
+
+<section class="card">
+  <h2>How are you feeling?</h2>
+  <p class="muted">Select how sick you feel right now.</p>
+
+  <div class="feelings" id="feelings"></div>
+
+  <button class="primary wide" id="saveFeeling">
+    Save check-in
+  </button>
+
+  <p class="status" id="feelingStatus"></p>
+</section>
+
+<!-- SYMPTOMS -->
+
+<section class="card">
+  <h2>Symptoms</h2>
+  <p class="muted">Record your current symptoms.</p>
+
+  <div class="symptoms" id="symptoms"></div>
+
+  <input class="field" id="otherSymptoms"
+    maxlength="200"
+    placeholder="Other symptoms">
+
+  <button class="primary wide" id="saveSymptoms"
+    style="margin-top:12px">
+    Save symptoms
+  </button>
+
+  <p class="status" id="symptomStatus"></p>
+</section>
+
+<!-- APPLE HEALTH SLEEP TRACKER -->
+
+<section class="card full">
+
+  <div class="sleep-icon">
+    <svg viewBox="0 0 24 24">
+      <path d="M20 15A9 9 0 0 1 9 4a9 9 0 1 0 11 11Z"/>
+    </svg>
+  </div>
+
+  <div class="row between wrap">
+    <div>
+      <h2>Sleep tracker</h2>
+      <p class="muted">
+        Import sleep data from Apple Health.
+      </p>
+    </div>
+
+    <span class="connection-status" id="sleepSource">
+      No data
+    </span>
+  </div>
+
+  <div class="big" id="sleepDuration">— hrs</div>
+
+  <p class="muted" id="sleepDate">
+    No sleep records imported
+  </p>
+
+  <div class="tiles">
+    <div class="tile">
+      <p class="muted">Sleep start</p>
+      <h3 id="bedtime" style="margin-top:8px">—</h3>
+    </div>
+
+    <div class="tile">
+      <p class="muted">Sleep end</p>
+      <h3 id="wakeTime" style="margin-top:8px">—</h3>
+    </div>
+  </div>
+
+  <div id="stagesSection" hidden>
+    <h3>Sleep stages</h3>
+    <div class="sleep-stages" id="sleepStages"></div>
+    <div class="legend" id="sleepLegend"></div>
+  </div>
+
+  <div class="health-box">
+
+    <div class="row">
+      <div class="health-logo">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 21S2 15 2 8a5.5 5.5 0 0 1 10-3 5.5 5.5 0 0 1 10 3c0 7-10 13-10 13Z"/>
+        </svg>
+      </div>
+
+      <div class="health-info">
+        <strong>Apple Health</strong>
+        <p class="muted">Read-only via Shortcuts</p>
+      </div>
+
+      <span class="connection-status" id="healthStatus">
+        Not connected
+      </span>
+    </div>
+
+    <button class="primary wide" id="connectHealth"
+      style="margin-top:18px">
+      Connect Apple Health
+    </button>
+
+    <button class="secondary wide" id="importSleep"
+      style="margin-top:8px">
+      Import sleep data
+    </button>
+
+    <button class="secondary wide" id="disconnectHealth"
+      style="margin-top:8px" hidden>
+      Disconnect &amp; clear imported sleep
+    </button>
+
+    <p class="status" id="lastSync">
+      Never imported
+    </p>
+
+    <p class="muted" style="margin-top:10px">
+      This website cannot access HealthKit directly.
+      Your shortcut reads the records and you approve
+      importing them here.
+    </p>
+  </div>
+
+  <h3 style="margin-top:24px">Sleep history</h3>
+  <div class="history" id="sleepHistory"></div>
+
+</section>
+
+<!-- TEMPERATURE -->
+
+<section class="card">
+  <h2>Temperature</h2>
+  <p class="muted">Record a thermometer reading.</p>
+
+  <div class="big" id="temperatureValue">—</div>
+
+  <div class="row">
+    <input class="field" id="temperatureInput"
+      type="number" step=".1" placeholder="Temperature">
+
+    <select class="field" id="temperatureUnit"
+      style="max-width:85px">
+      <option value="F">°F</option>
+      <option value="C">°C</option>
+    </select>
+  </div>
+
+  <button class="primary wide" id="saveTemperature"
+    style="margin-top:10px">
+    Log temperature
+  </button>
+
+  <p class="status" id="temperatureStatus"></p>
+</section>
+
+<!-- HYDRATION -->
+
+<section class="card">
+  <h2>Hydration</h2>
+  <p class="muted">Record drinks you've had today.</p>
+
+  <div class="big" id="waterValue">0 cups</div>
+
+  <div class="row wrap" style="margin-top:15px">
+    <button class="secondary" data-water=".5">+ ½ cup</button>
+    <button class="secondary" data-water="1">+ 1 cup</button>
+    <button class="secondary" data-water="2">+ 2 cups</button>
+  </div>
+
+  <p class="muted" style="margin-top:12px">
+    A record of drinks, not a prescribed target.
+  </p>
+</section>
+
+<!-- MANUAL REST -->
+
+<section class="card">
+  <h2>Manual rest tracker</h2>
+  <p class="muted">Record completed naps or rest periods separately.</p>
+
+  <div class="big" id="restValue">0 hrs</div>
+
+  <input class="field" id="restInput"
+    type="number" min=".25" max="24" step=".25"
+    placeholder="Hours of rest">
+
+  <button class="primary wide" id="saveRest"
+    style="margin-top:10px">
+    Log rest
+  </button>
+
+  <p class="status" id="restStatus"></p>
+</section>
+
+<!-- MEDICATION -->
+
+<section class="card">
+  <h2>Medication log</h2>
+
+  <p class="muted">
+    Record medication already taken according to
+    your parent, pharmacist or doctor's instructions.
+  </p>
+
+  <input class="field" id="medicineName"
+    maxlength="100" placeholder="Medication name">
+
+  <input class="field" id="medicineNotes"
+    maxlength="200" placeholder="Optional notes">
+
+  <button class="primary wide" id="saveMedicine"
+    style="margin-top:10px">
+    Record medication
+  </button>
+
+  <p class="status" id="medicineStatus"></p>
+</section>
+
+<!-- JOURNAL -->
+
+<section class="card full">
+  <h2>Recovery journal</h2>
+  <p class="muted">Write down how you've been feeling.</p>
+
+  <textarea class="field" id="journalInput"
+    maxlength="3000"
+    placeholder="How has today been?"></textarea>
+
+  <button class="primary" id="saveJournal"
+    style="margin-top:10px">
+    Save journal entry
+  </button>
+</section>
+
+<!-- RECOVERY HISTORY -->
+
+<section class="card full">
+  <h2>Recovery history</h2>
+  <p class="muted">
+    Your recent self-reported sickness levels.
+  </p>
+
+  <div class="tile" style="margin-top:16px">
+    <canvas id="recoveryChart"
+      style="width:100%;height:240px;display:block">
+    </canvas>
+  </div>
+
+  <p class="muted" style="margin-top:10px">
+    This graph is not a medical assessment.
+  </p>
+</section>
+
+<!-- ACTIVITY -->
+
+<section class="card full">
+  <div class="row between wrap">
+    <h2>Activity history</h2>
+
+    <select class="field" id="historyFilter"
+      style="width:auto;margin:0">
+      <option value="all">All activity</option>
+      <option value="feeling">Check-ins</option>
+      <option value="symptoms">Symptoms</option>
+      <option value="temperature">Temperature</option>
+      <option value="water">Hydration</option>
+      <option value="rest">Rest</option>
+      <option value="medicine">Medication</option>
+      <option value="journal">Journal</option>
+    </select>
+  </div>
+
+  <div class="history" id="history"></div>
+</section>
+
+<!-- HEALTH GUIDANCE -->
+
+<section class="card full">
+  <h2>Taking care of yourself</h2>
+
+  <div class="tile" style="margin-top:12px">
+    <strong>Rest and recovery</strong>
+    <p class="muted">
+      Rest, drink fluids regularly and tell a parent
+      or trusted adult when you're feeling unwell.
+    </p>
+  </div>
+
+  <div class="tile" style="margin-top:8px">
+    <strong>When to get medical advice</strong>
+    <p class="muted">
+      Contact a healthcare professional if symptoms
+      worsen or you are concerned about your illness.
+    </p>
+  </div>
+
+  <div class="tile" style="margin-top:8px;border-color:#ef7777">
+    <strong style="color:#ef7777">Emergency symptoms</strong>
+    <p>
+      Seek emergency help for serious breathing
+      difficulties, severe chest pain, confusion,
+      fainting or difficulty waking up.
+      Call 911 in the United States.
+    </p>
+  </div>
+</section>
+
+<!-- APPEARANCE -->
+
+<section class="card full">
+  <h2>Appearance</h2>
+
+  <div class="row wrap" style="margin-top:15px">
+    <button class="secondary" data-theme="gray">Gray</button>
+    <button class="secondary" data-theme="charcoal">Charcoal</button>
+    <button class="secondary" data-theme="light">Light</button>
+    <button class="secondary" id="replayIntro">Replay intro</button>
+  </div>
+</section>
+
+<!-- PRIVACY -->
+
+<section class="card full">
+  <h2>Data &amp; privacy</h2>
+
+  <p class="muted">
+    Imported sleep records and recovery logs are stored
+    in this browser without encryption. Use a private
+    device. Clearing browser storage may erase them.
+    No health records are sent to a server by this code.
+  </p>
+
+  <button class="secondary" id="clearData"
+    style="margin-top:15px;color:#ef7777">
+    Clear all recovery data
+  </button>
+</section>
+
+</main>
+
+<!-- CONNECT DIALOG -->
+
+<dialog id="connectDialog">
+
+  <div class="health-logo" style="margin-bottom:18px">
+    <svg viewBox="0 0 24 24">
+      <path d="M12 21S2 15 2 8a5.5 5.5 0 0 1 10-3 5.5 5.5 0 0 1 10 3c0 7-10 13-10 13Z"/>
+    </svg>
+  </div>
+
+  <h2>Connect Apple Health</h2>
+
+  <p class="muted">
+    Use the Sick Sleep Sync shortcut on your iPhone.
+    Only allow read access to sleep data.
+  </p>
+
+  <div class="tile" style="margin-top:15px">
+    <strong>1. Create your shortcut</strong>
+    <p class="muted">
+      Name it Sick Sleep Sync and configure
+      Find Health Samples for Sleep.
+    </p>
+  </div>
+
+  <div class="tile" style="margin-top:8px">
+    <strong>2. Run the shortcut</strong>
+    <p class="muted">
+      Allow sleep read permission and copy
+      the formatted sleep summary.
+    </p>
+  </div>
+
+  <div class="tile" style="margin-top:8px">
+    <strong>3. Import your sleep</strong>
+    <p class="muted">
+      Return here and paste the shortcut's output.
+    </p>
+  </div>
+
+  <button class="primary wide" id="runShortcut">
+    Open Sick Sleep Sync
+  </button>
+
+  <button class="secondary wide" id="openShortcuts">
+    Open Shortcuts app
+  </button>
+
+  <button class="secondary wide" id="closeConnect">
+    Close
+  </button>
+
+</dialog>
+
+<!-- IMPORT DIALOG -->
+
+<dialog id="importDialog">
+
+  <h2>Import sleep data</h2>
+
+  <p class="muted">
+    Paste the formatted sleep summary from your
+    Sick Sleep Sync shortcut.
+  </p>
+
+  <textarea class="field" id="sleepInput"
+    style="min-height:170px"
+    placeholder="Paste sleep JSON here"></textarea>
+
+  <button class="secondary wide" id="pasteClipboard">
+    Paste from clipboard
+  </button>
+
+  <button class="primary wide" id="confirmImport">
+    Import sleep records
+  </button>
+
+  <button class="secondary wide" id="cancelImport">
+    Cancel
+  </button>
+
+  <p class="status" id="importStatus"></p>
+
+</dialog>
+
+<footer>
+  &copy; 2026 Aiden · Sick.
+  <p>Rest. Recover. Take care.</p>
+</footer>
+
+<script>
+"use strict";
+
+const $ = id => document.getElementById(id);
+
+const DATA_KEY = "sick-recovery-data-v1";
+const SLEEP_KEY = "sick-apple-health-v1";
+const THEME_KEY = "sick-theme-v1";
+
+const SHORTCUT_NAME = "Sick Sleep Sync";
+
+const levels = [
+  {name:"Very sick",color:"#ef7777"},
+  {name:"Mostly sick",color:"#ed9560"},
+  {name:"Sick",color:"#e5c35c"},
+  {name:"Less sick",color:"#b5ce78"},
+  {name:"Mostly not sick",color:"#78c99a"}
+];
+
+let entries = [];
+let sleepRecords = [];
+let importedAt = null;
+let selectedFeeling = null;
+let introTimer;
+
+function make(tag,text,className) {
+  const element = document.createElement(tag);
+  if(text !== undefined) element.textContent = text;
+  if(className) element.className = className;
+  return element;
+}
+
+function store(key,value) {
+  try {
+    localStorage.setItem(key,JSON.stringify(value));
+    $("storageStatus").textContent = "Local browser storage";
+    return true;
+  } catch {
+    $("storageStatus").textContent =
+      "Browser storage unavailable — session only";
+    return false;
+  }
+}
+
+function read(key,fallback) {
+  try {
+    const value = localStorage.getItem(key);
+    return value ? JSON.parse(value) : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function formatTime(value) {
+  return new Date(value).toLocaleTimeString([],{
+    hour:"numeric",minute:"2-digit"
+  });
+}
+
+function formatDate(value) {
+  return new Date(value).toLocaleString([],{
+    month:"short",day:"numeric",
+    hour:"numeric",minute:"2-digit"
+  });
+}
+
+function duration(minutes) {
+  const total = Math.round(minutes);
+  return Math.floor(total/60) + "h " + total%60 + "m";
+}
+
+/* INTRO */
+
+function finishIntro() {
+  clearTimeout(introTimer);
+  $("intro").classList.add("finished");
+  $("intro").inert = true;
+  $("app").inert = false;
+  document.body.classList.add("ready");
+}
+
+function startIntro() {
+  clearTimeout(introTimer);
+  document.body.classList.remove("ready");
+  $("intro").classList.remove("finished");
+  $("intro").inert = false;
+  $("app").inert = true;
+
+  const bar = document.querySelector(".loading span");
+  bar.style.animation = "none";
+  void bar.offsetWidth;
+  bar.style.animation = "";
+
+  introTimer = setTimeout(
+    finishIntro,
+    matchMedia("(prefers-reduced-motion: reduce)").matches
+      ? 100 : 2800
+  );
+}
+
+$("skipIntro").onclick = finishIntro;
+$("replayIntro").onclick = startIntro;
+
+/* CLOCK */
+
+function updateClock() {
+  const now = new Date();
+
+  $("clock").textContent = formatTime(now);
+
+  $("date").textContent = now.toLocaleDateString([],{
+    weekday:"long",month:"long",day:"numeric"
+  });
+}
+
+updateClock();
+setInterval(updateClock,1000);
+
+/* ACTIVITY STORAGE */
+
+function addEntry(type,data) {
+  entries.unshift({
+    id: globalThis.crypto?.randomUUID
+      ? crypto.randomUUID()
+      : Date.now()+"-"+Math.random(),
+    type,
+    time:new Date().toISOString(),
+    ...data
+  });
+
+  const saved = store(DATA_KEY,entries);
+  render();
+  return saved;
+}
+
+function latest(type) {
+  return entries.find(entry => entry.type === type);
+}
+
+function todayTotal(type) {
+  return entries.filter(entry =>
+    entry.type === type &&
+    new Date(entry.time).toDateString() ===
+    new Date().toDateString()
+  ).reduce((sum,entry) =>
+    sum + (Number(entry.amount)||0),0
+  );
+}
+
+/* SICKNESS LEVELS */
+
+function renderFeelings() {
+  $("feelings").replaceChildren();
+
+  levels.forEach((level,index) => {
+    const button = make("button",undefined,"feeling");
+    button.style.setProperty("--level",level.color);
+
+    button.classList.toggle("active",selectedFeeling===index);
+    button.setAttribute("aria-pressed",selectedFeeling===index);
+
+    button.append(
+      make("span",undefined,"dot"),
+      make("strong",level.name)
+    );
+
+    button.onclick = () => {
+      selectedFeeling = index;
+      renderFeelings();
+      $("feelings").children[index].focus();
+    };
+
+    $("feelings").appendChild(button);
+  });
+}
+
+$("saveFeeling").onclick = () => {
+  if(selectedFeeling === null) {
+    $("feelingStatus").textContent = "Select a sickness level.";
+    return;
+  }
+
+  const saved = addEntry("feeling",{level:selectedFeeling});
+
+  $("feelingStatus").textContent = saved
+    ? "Check-in saved."
+    : "Recorded for this session only.";
+};
+
+/* SYMPTOMS */
+
+[
+  "Headache","Sore throat","Runny nose","Stuffy nose",
+  "Cough","Fever","Chills","Fatigue",
+  "Body aches","Nausea","Stomachache","Dizziness"
+].forEach(name => {
+  const label = make("label",undefined,"symptom");
+  const input = document.createElement("input");
+
+  input.type = "checkbox";
+  input.value = name;
+
+  label.append(input,document.createTextNode(" "+name));
+  $("symptoms").appendChild(label);
+});
+
+$("saveSymptoms").onclick = () => {
+  const symptoms = [...$("symptoms").querySelectorAll("input:checked")]
+    .map(input => input.value);
+
+  const other = $("otherSymptoms").value.trim();
+  if(other) symptoms.push(other);
+
+  const saved = addEntry("symptoms",{symptoms});
+
+  $("otherSymptoms").value = "";
+
+  $("symptomStatus").textContent = saved
+    ? "Symptoms saved."
+    : "Recorded for this session only.";
+};
+
+/* APPLE HEALTH CONNECTION */
+
+$("connectHealth").onclick = () => {
+  $("connectDialog").showModal();
+};
+
+$("closeConnect").onclick = () => {
+  $("connectDialog").close();
+};
+
+$("runShortcut").onclick = () => {
+  window.location.href =
+    "shortcuts://run-shortcut?name=" +
+    encodeURIComponent(SHORTCUT_NAME);
+};
+
+$("openShortcuts").onclick = () => {
+  window.location.href = "shortcuts://";
+};
+
+$("importSleep").onclick = () => {
+  $("sleepInput").value = "";
+  $("importStatus").textContent = "";
+  $("importDialog").showModal();
+};
+
+$("cancelImport").onclick = () => {
+  $("sleepInput").value = "";
+  $("importDialog").close();
+};
+
+$("pasteClipboard").onclick = async () => {
+  try {
+    $("sleepInput").value =
+      await navigator.clipboard.readText();
+  } catch {
+    $("importStatus").textContent =
+      "Clipboard access unavailable. Paste manually into the text box.";
+  }
+};
+
+/* SLEEP DATA VALIDATION
+
+Expected format:
+
+{
+  "source": "Apple Health",
+  "sessions": [
+    {
+      "start": "ISO date with timezone",
+      "end": "ISO date with timezone",
+      "asleepMinutes": 480,
+      "remMinutes": 90,
+      "coreMinutes": 300,
+      "deepMinutes": 90,
+      "awakeMinutes": 20
+    }
+  ]
+}
+
+Each session must already be summarized without
+overlapping Apple Health samples being counted twice.
+
+Stage values are optional.
+*/
+
+function validateSleepData(raw) {
+  if(raw.length > 1000000) {
+    throw new Error("The imported file is too large.");
+  }
+
+  const data = JSON.parse(raw);
+
+  if(!data || !Array.isArray(data.sessions)) {
+    throw new Error("Expected a JSON object containing sessions.");
+  }
+
+  if(!data.sessions.length || data.sessions.length > 365) {
+    throw new Error("Import between 1 and 365 sleep sessions.");
+  }
+
+  return data.sessions.map(session => {
+    const start = new Date(session.start);
+    const end = new Date(session.end);
+    const elapsed = (end-start)/60000;
+
+    if(
+      !Number.isFinite(start.getTime()) ||
+      !Number.isFinite(end.getTime()) ||
+      elapsed <= 0 ||
+      elapsed > 1440 ||
+      end.getTime() > Date.now()+300000
+    ) {
+      throw new Error("Invalid sleep session dates.");
+    }
+
+    const asleep = session.asleepMinutes;
+
+    if(
+      typeof asleep !== "number" ||
+      !Number.isFinite(asleep) ||
+      asleep <= 0 ||
+      asleep > elapsed+1
+    ) {
+      throw new Error("Invalid sleep duration.");
+    }
+
+    const record = {
+      start:start.toISOString(),
+      end:end.toISOString(),
+      asleepMinutes:asleep
+    };
+
+    const stageKeys = [
+      "remMinutes","coreMinutes",
+      "deepMinutes","awakeMinutes"
+    ];
+
+    stageKeys.forEach(key => {
+      if(session[key] !== undefined) {
+        const value = session[key];
+
+        if(
+          typeof value !== "number" ||
+          !Number.isFinite(value) ||
+          value < 0 ||
+          value > elapsed+1
+        ) {
+          throw new Error("Invalid sleep stage duration.");
+        }
+
+        record[key] = value;
+      }
+    });
+
+    const stageSleep =
+      (record.remMinutes||0) +
+      (record.coreMinutes||0) +
+      (record.deepMinutes||0);
+
+    if(
+      stageSleep > asleep+1 ||
+      asleep+(record.awakeMinutes||0) > elapsed+1
+    ) {
+      throw new Error("Sleep stages overlap or exceed session duration.");
+    }
+
+    return record;
+  });
+}
+
+$("confirmImport").onclick = () => {
+  try {
+    const imported = validateSleepData(
+      $("sleepInput").value.trim()
+    );
+
+    const combined = [...sleepRecords];
+
+    imported.forEach(record => {
+      const index = combined.findIndex(old =>
+        old.start === record.start &&
+        old.end === record.end
+      );
+
+      if(index >= 0) {
+        combined[index] = record;
+      } else {
+        const overlaps = combined.some(old =>
+          new Date(record.start) < new Date(old.end) &&
+          new Date(record.end) > new Date(old.start)
+        );
+
+        if(overlaps) {
+          throw new Error(
+            "Overlapping sleep sessions detected. Remove the overlap before importing."
+          );
+        }
+
+        combined.push(record);
+      }
+    });
+
+    combined.sort((a,b) =>
+      new Date(b.end)-new Date(a.end)
+    );
+
+    sleepRecords = combined;
+    importedAt = new Date().toISOString();
+
+    const saved = store(SLEEP_KEY,{
+      records:sleepRecords,
+      importedAt
+    });
+
+    $("sleepInput").value = "";
+    $("importDialog").close();
+
+    renderSleep();
+
+    if(!saved) {
+      $("lastSync").textContent =
+        "Imported for this session only. Browser storage unavailable.";
+    }
+
+  } catch(error) {
+    $("importStatus").textContent =
+      error instanceof SyntaxError
+        ? "Invalid JSON. Check the shortcut's output format."
+        : error.message;
+  }
+};
+
+/* SLEEP DISPLAY */
+
+function renderSleep() {
+  const hasData = sleepRecords.length > 0;
+  const latestSleep = sleepRecords[0];
+
+  $("healthStatus").textContent = hasData
+    ? "Data imported"
+    : "Not connected";
+
+  $("healthStatus").classList.toggle("connected",hasData);
+
+  $("sleepSource").textContent = hasData
+    ? "Shortcut import"
+    : "No data";
+
+  $("connectHealth").textContent = hasData
+    ? "Open Apple Health connection"
+    : "Connect Apple Health";
+
+  $("disconnectHealth").hidden = !hasData;
+
+  $("lastSync").textContent = importedAt
+    ? "Last imported: "+formatDate(importedAt)
+    : "Never imported";
+
+  $("sleepHistory").replaceChildren();
+  $("sleepStages").replaceChildren();
+  $("sleepLegend").replaceChildren();
+
+  if(!hasData) {
+    $("sleepDuration").textContent = "— hrs";
+    $("sleepDate").textContent = "No sleep records imported";
+    $("bedtime").textContent = "—";
+    $("wakeTime").textContent = "—";
+    $("stagesSection").hidden = true;
+
+    $("sleepHistory").appendChild(
+      make("p","No imported sleep history.","muted")
+    );
+
+    return;
+  }
+
+  $("sleepDuration").textContent =
+    duration(latestSleep.asleepMinutes);
+
+  $("sleepDate").textContent =
+    "Latest sleep session · "+
+    new Date(latestSleep.end).toLocaleDateString();
+
+  $("bedtime").textContent = formatTime(latestSleep.start);
+  $("wakeTime").textContent = formatTime(latestSleep.end);
+
+  const classified =
+    (latestSleep.remMinutes||0)+
+    (latestSleep.coreMinutes||0)+
+    (latestSleep.deepMinutes||0);
+
+  const stages = [
+    {name:"Awake",color:"#ed9560",minutes:latestSleep.awakeMinutes},
+    {name:"REM",color:"#77cbe8",minutes:latestSleep.remMinutes},
+    {name:"Core",color:"#537bdc",minutes:latestSleep.coreMinutes},
+    {name:"Deep",color:"#7656cf",minutes:latestSleep.deepMinutes},
+    {
+      name:"Unclassified sleep",
+      color:"#8f8f8f",
+      minutes:Math.max(0,latestSleep.asleepMinutes-classified)
+    }
+  ].filter(stage => Number.isFinite(stage.minutes));
+
+  const total = stages.reduce((sum,stage) =>
+    sum+stage.minutes,0
+  );
+
+  $("stagesSection").hidden = classified === 0;
+
+  stages.forEach(stage => {
+    const bar = make("div",undefined,"stage");
+
+    bar.style.background = stage.color;
+    bar.style.flex = String(stage.minutes);
+
+    if(stage.minutes > 0 && total > 0) {
+      $("sleepStages").appendChild(bar);
+    }
+
+    const row = make("div",undefined,"row between");
+    const name = make("div",undefined,"row");
+    const dot = make("span",undefined,"legend-dot");
+
+    dot.style.background = stage.color;
+
+    name.append(dot,make("span",stage.name));
+
+    row.append(name,make("strong",duration(stage.minutes)));
+
+    $("sleepLegend").appendChild(row);
+  });
+
+  sleepRecords.slice(0,30).forEach(record => {
+    const item = make("div",undefined,"history-item");
+
+    item.append(
+      make("strong",duration(record.asleepMinutes)),
+      make("p",
+        formatDate(record.start)+" – "+formatDate(record.end),
+        "muted"
+      )
+    );
+
+    const remove = make("button","Delete","secondary");
+
+    remove.onclick = () => {
+      if(!confirm("Delete this imported sleep session?")) return;
+
+      sleepRecords = sleepRecords.filter(old =>
+        old.start !== record.start ||
+        old.end !== record.end
+      );
+
+      if(!sleepRecords.length) importedAt = null;
+
+      const saved = store(SLEEP_KEY,{
+        records:sleepRecords,
+        importedAt
+      });
+
+      renderSleep();
+
+      if(!saved) {
+        $("lastSync").textContent =
+          "Storage unavailable. Deletion applies to this session only.";
+      }
+    };
+
+    item.appendChild(remove);
+    $("sleepHistory").appendChild(item);
+  });
+}
+
+$("disconnectHealth").onclick = () => {
+  if(!confirm(
+    "Clear imported sleep records from this website? This will not change Apple Health."
+  )) return;
+
+  try {
+    localStorage.removeItem(SLEEP_KEY);
+  } catch {
+    $("lastSync").textContent =
+      "Unable to clear saved browser records.";
+    return;
+  }
+
+  sleepRecords = [];
+  importedAt = null;
+
+  renderSleep();
+
+  $("lastSync").textContent =
+    "Local data cleared. Manage Shortcuts health permissions in Apple Health.";
+};
+
+/* TEMPERATURE */
+
+$("saveTemperature").onclick = () => {
+  const raw = $("temperatureInput").value.trim();
+  const value = Number(raw);
+  const unit = $("temperatureUnit").value;
+
+  const celsius = unit==="F"
+    ? (value-32)*5/9 : value;
+
+  if(!raw || !Number.isFinite(value)) {
+    $("temperatureStatus").textContent =
+      "Enter a valid reading.";
+    return;
+  }
+
+  if(celsius<25 || celsius>46) {
+    $("temperatureStatus").textContent =
+      "Check the reading and unit. If accurate, seek emergency medical help.";
+    return;
+  }
+
+  const saved = addEntry("temperature",{value,unit});
+
+  $("temperatureInput").value = "";
+
+  $("temperatureStatus").textContent =
+    celsius>=40 || celsius<35
+      ? "Tell a trusted adult and seek urgent medical advice."
+      : saved ? "Temperature saved." : "Session only.";
+};
+
+/* HYDRATION */
+
+document.querySelectorAll("[data-water]").forEach(button => {
+  button.onclick = () => {
+    addEntry("water",{amount:Number(button.dataset.water)});
+  };
+});
+
+/* REST */
+
+$("saveRest").onclick = () => {
+  const amount = Number($("restInput").value);
+
+  if(
+    !Number.isFinite(amount) ||
+    amount<.25 ||
+    amount>24 ||
+    todayTotal("rest")+amount>24
+  ) {
+    $("restStatus").textContent =
+      "Check the recorded rest duration.";
+    return;
+  }
+
+  const saved = addEntry("rest",{amount});
+
+  $("restInput").value = "";
+
+  $("restStatus").textContent =
+    saved ? "Rest saved." : "Session only.";
+};
+
+/* MEDICATION */
+
+$("saveMedicine").onclick = () => {
+  const name = $("medicineName").value.trim();
+  const notes = $("medicineNotes").value.trim();
+
+  if(!name) {
+    $("medicineStatus").textContent = "Enter a name.";
+    return;
+  }
+
+  const saved = addEntry("medicine",{name,notes});
+
+  $("medicineName").value = "";
+  $("medicineNotes").value = "";
+
+  $("medicineStatus").textContent =
+    saved ? "Medication recorded." : "Session only.";
+};
+
+/* JOURNAL */
+
+$("saveJournal").onclick = () => {
+  const text = $("journalInput").value.trim();
+
+  if(!text) return;
+
+  addEntry("journal",{text});
+  $("journalInput").value = "";
+};
+
+/* RECOVERY CHART */
+
+function drawChart() {
+  const canvas = $("recoveryChart");
+  const ctx = canvas.getContext("2d");
+
+  if(!ctx) return;
+
+  const bounds = canvas.getBoundingClientRect();
+  const w = bounds.width;
+  const h = bounds.height;
+  const ratio = devicePixelRatio||1;
+
+  canvas.width = w*ratio;
+  canvas.height = h*ratio;
+
+  ctx.scale(ratio,ratio);
+
+  const points = entries.filter(entry =>
+    entry.type==="feeling" && levels[entry.level]
+  ).slice(0,14).reverse();
+
+  const css = getComputedStyle(document.documentElement);
+  const muted = css.getPropertyValue("--muted").trim();
+  const line = css.getPropertyValue("--line").trim();
+
+  ctx.font = "11px Arial";
+  ctx.fillStyle = muted;
+
+  if(!points.length) {
+    ctx.textAlign = "center";
+    ctx.fillText("No check-ins recorded yet",w/2,h/2);
+    return;
+  }
+
+  const left = 110;
+  const top = 20;
+  const bottom = h-25;
+  const right = w-12;
+
+  if(right<=left) return;
+
+  levels.forEach((level,index) => {
+    const y = bottom-index/4*(bottom-top);
+
+    ctx.fillStyle = muted;
+    ctx.fillText(level.name,0,y+4);
+
+    ctx.strokeStyle = line;
+    ctx.beginPath();
+    ctx.moveTo(left,y);
+    ctx.lineTo(right,y);
+    ctx.stroke();
+  });
+
+  const coordinates = points.map((entry,index) => ({
+    x:points.length===1
+      ? (left+right)/2
+      : left+index/(points.length-1)*(right-left),
+    y:bottom-entry.level/4*(bottom-top),
+    level:entry.level
+  }));
+
+  ctx.beginPath();
+
+  coordinates.forEach((point,index) => {
+    if(index===0) ctx.moveTo(point.x,point.y);
+    else ctx.lineTo(point.x,point.y);
+  });
+
+  ctx.strokeStyle = "#78c99a";
+  ctx.lineWidth = 2.5;
+  ctx.stroke();
+
+  coordinates.forEach(point => {
+    ctx.beginPath();
+    ctx.arc(point.x,point.y,4.5,0,Math.PI*2);
+    ctx.fillStyle = levels[point.level].color;
+    ctx.fill();
+  });
+}
+
+window.addEventListener("resize",drawChart);
+
+/* HISTORY */
+
+function describe(entry) {
+  switch(entry.type) {
+    case "feeling":
+      return ["Check-in",levels[entry.level]?.name||"Unknown"];
+    case "symptoms":
+      return ["Symptoms",entry.symptoms.join(", ")||"None reported"];
+    case "temperature":
+      return ["Temperature",entry.value+"°"+entry.unit];
+    case "water":
+      return ["Hydration",entry.amount+" cup(s)"];
+    case "rest":
+      return ["Rest",entry.amount+" hour(s)"];
+    case "medicine":
+      return ["Medication",entry.name+" "+(entry.notes||"")];
+    case "journal":
+      return ["Journal",entry.text];
+    default:
+      return ["Activity","Recorded entry"];
+  }
+}
+
+function renderHistory() {
+  $("history").replaceChildren();
+
+  const filter = $("historyFilter").value;
+
+  const filtered = entries.filter(entry =>
+    filter==="all" || entry.type===filter
+  );
+
+  if(!filtered.length) {
+    $("history").appendChild(
+      make("p","No recorded activity.","muted")
+    );
+  }
+
+  filtered.forEach(entry => {
+    const item = make("div",undefined,"history-item");
+    const [title,description] = describe(entry);
+
+    item.append(
+      make("strong",title),
+      make("p",description),
+      make("p",formatDate(entry.time),"muted")
+    );
+
+    const remove = make("button","Delete","secondary");
+
+    remove.onclick = () => {
+      if(!confirm("Delete this entry?")) return;
+
+      entries = entries.filter(old => old.id!==entry.id);
+      store(DATA_KEY,entries);
+      render();
+    };
+
+    item.appendChild(remove);
+    $("history").appendChild(item);
+  });
+}
+
+$("historyFilter").onchange = renderHistory;
+
+/* RENDER */
+
+function render() {
+  const feeling = latest("feeling");
+  const level = feeling && levels[feeling.level];
+
+  $("currentFeeling").textContent =
+    level ? level.name : "Not recorded";
+
+  $("currentFeeling").style.color =
+    level ? level.color : "";
+
+  $("feelingTime").textContent = level
+    ? "Recorded "+formatDate(feeling.time)
+    : "Complete a check-in to get started.";
+
+  const temperature = latest("temperature");
+
+  $("temperatureValue").textContent = temperature
+    ? temperature.value+"°"+temperature.unit
+    : "—";
+
+  $("waterValue").textContent =
+    todayTotal("water")+" cups";
+
+  $("restValue").textContent =
+    todayTotal("rest")+" hrs";
+
+  renderHistory();
+  drawChart();
+}
+
+/* THEMES */
+
+function applyTheme(theme) {
+  if(!["gray","charcoal","light"].includes(theme)) {
+    theme = "gray";
+  }
+
+  document.documentElement.dataset.theme = theme;
+  store(THEME_KEY,theme);
+  drawChart();
+}
+
+document.querySelectorAll("button[data-theme]").forEach(button => {
+  button.onclick = () => applyTheme(button.dataset.theme);
+});
+
+/* CLEAR ALL */
+
+$("clearData").onclick = () => {
+  if(!confirm(
+    "Delete all local recovery logs and imported sleep records?"
+  )) return;
+
+  try {
+    localStorage.removeItem(DATA_KEY);
+    localStorage.removeItem(SLEEP_KEY);
+  } catch {
+    $("storageStatus").textContent =
+      "Unable to clear saved browser data.";
+    return;
+  }
+
+  entries = [];
+  sleepRecords = [];
+  importedAt = null;
+  selectedFeeling = null;
+
+  renderFeelings();
+  renderSleep();
+  render();
+};
+
+/* STARTUP */
+
+const savedEntries = read(DATA_KEY,[]);
+
+entries = Array.isArray(savedEntries)
+  ? savedEntries.filter(entry =>
+      entry && typeof entry.type==="string" &&
+      Number.isFinite(new Date(entry.time).getTime())
+    )
+  : [];
+
+const savedSleep = read(SLEEP_KEY,{});
+
+try {
+  if(savedSleep?.records?.length) {
+    sleepRecords = validateSleepData(
+      JSON.stringify({sessions:savedSleep.records})
+    ).sort((a,b)=>new Date(b.end)-new Date(a.end));
+
+    importedAt = savedSleep.importedAt||null;
+  }
+} catch {
+  sleepRecords = [];
+}
+
+document.querySelectorAll(".card").forEach((card,index) => {
+  card.style.setProperty("--i",Math.min(index,10));
+});
+
+applyTheme(read(THEME_KEY,"gray"));
+renderFeelings();
+renderSleep();
+render();
+startIntro();
+
+setInterval(render,60000);
+
+</script>
+</body>
+</html>
